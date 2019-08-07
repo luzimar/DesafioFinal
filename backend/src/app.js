@@ -1,5 +1,5 @@
-import express from "express";
-import routes from "./routes";
+import express from 'express';
+import routes from './routes';
 
 class App {
   constructor() {
@@ -9,7 +9,7 @@ class App {
   }
 
   middlewares() {
-    //permitindo receber requisições e retornar respostas no formato json
+    // permitindo receber requisições e retornar respostas no formato json
     this.server.use(express.json());
   }
 
