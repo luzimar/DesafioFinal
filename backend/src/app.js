@@ -1,7 +1,6 @@
 import express from 'express';
 import routes from './routes';
 
-require('dotenv').config();
 
 class App {
   constructor() {
