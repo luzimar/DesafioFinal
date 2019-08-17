@@ -7,6 +7,7 @@ import authMiddleware from './app/middlewares/auth';
 import multerConfig from './config/multer';
 import MeetupController from './app/controllers/MeetupController';
 import SubscriptionController from './app/controllers/SubscriptionController';
+import NotificationController from './app/controllers/NotificationController';
 
 const routes = new Router();
 const upload = multer(multerConfig);
@@ -24,4 +25,7 @@ routes.delete('/meetups/:id', MeetupController.delete);
 
 routes.get('/subscriptions', SubscriptionController.index);
 routes.post('/subscriptions/:meetupId', SubscriptionController.store);
+
+routes.get('/notifications', NotificationController.index);
+
 export default routes;
