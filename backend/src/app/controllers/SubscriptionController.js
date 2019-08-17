@@ -1,7 +1,10 @@
 import { Op } from 'sequelize';
+import { format } from 'date-fns';
+import pt from 'date-fns/locale/pt';
 import Meetup from '../models/Meetup';
 import Subscription from '../models/Subscription';
 import User from '../models/User';
+import Notification from '../schemas/Notification';
 
 class SubscriptionController {
   async index(req, res) {
@@ -70,6 +73,17 @@ class SubscriptionController {
       meetup_id: meetup.id,
     });
 
+    const userSubscribe = await User.findByPk(req.userId);
+    const formattedDate = format(
+      new Date(),
+      "'dia' dd 'de' MMMM', ás' H:mm'h'",
+      { locale: pt }
+    );
+
+    await Notification.create({
+      content: `Nova inscrição de ${userSubscribe.name}, ${formattedDate}`,
+      user: meetup.user_id,
+    });
     return res.json(subscription);
   }
 }
