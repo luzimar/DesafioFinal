@@ -42,6 +42,7 @@ class MeetupController {
 
   async store(req, res) {
     const schema = Yup.object().shape({
+      file_id: Yup.number().required(),
       title: Yup.string().required(),
       description: Yup.string().required(),
       location: Yup.string().required(),
@@ -68,6 +69,7 @@ class MeetupController {
 
   async update(req, res) {
     const schema = Yup.object().shape({
+      file_id: Yup.number(),
       title: Yup.string(),
       description: Yup.string(),
       location: Yup.string(),
