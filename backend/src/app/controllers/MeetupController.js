@@ -1,14 +1,26 @@
 import { Op } from 'sequelize';
 import * as Yup from 'yup';
-import { parseISO, isBefore } from 'date-fns';
+import { parseISO, isBefore, startOfDay, endOfDay } from 'date-fns';
 import Meetup from '../models/Meetup';
 import User from '../models/User';
 import File from '../models/File';
 
 class MeetupController {
   async index(req, res) {
+
+    const page = req.query.page || 1;
+    const where = {};
+
+    if(req.query.date){
+      const date = parseISO(req.query.date);
+
+      where.date = {
+        [Op.between]: [startOfDay(date), endOfDay(date)]
+      }
+    }
+
     const meetups = await Meetup.findAll({
-      where: { user_id: req.userId, date: { [Op.gt]: new Date() } },
+      where,
       order: ['date'],
       attributes: ['id', 'title', 'description', 'location', 'date'],
       include: [
@@ -21,6 +33,8 @@ class MeetupController {
           attributes: ['id', 'path', 'url'],
         },
       ],
+      limit: 10,
+      offset: (page - 1) * 10
     });
 
     return res.json(meetups);
