@@ -83,7 +83,7 @@ class SubscriptionController {
 
     const user = await User.findByPk(req.userId);
 
-    await Queue.add(Subscription.key, {
+    await Queue.add(SubscriptionMail.key, {
       meetup,
       user,
     });
