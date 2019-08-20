@@ -1,10 +1,8 @@
 import { Op } from 'sequelize';
-import { format } from 'date-fns';
-import pt from 'date-fns/locale/pt';
 import Meetup from '../models/Meetup';
 import Subscription from '../models/Subscription';
 import User from '../models/User';
-import Notification from '../schemas/Notification';
+import Mail from '../../lib/Mail';
 
 class SubscriptionController {
   async index(req, res) {
@@ -33,7 +31,15 @@ class SubscriptionController {
   }
 
   async store(req, res) {
-    const meetup = await Meetup.findByPk(req.params.meetupId);
+    const meetup = await Meetup.findByPk(req.params.meetupId, {
+      include: [
+        {
+          model: User,
+          as: 'organizer',
+          attributes: ['name', 'email'],
+        },
+      ],
+    });
 
     if (meetup.user_id === req.userId) {
       return res
@@ -73,17 +79,19 @@ class SubscriptionController {
       meetup_id: meetup.id,
     });
 
-    const userSubscribe = await User.findByPk(req.userId);
-    const formattedDate = format(
-      new Date(),
-      "'dia' dd 'de' MMMM', ás' H:mm'h'",
-      { locale: pt }
-    );
+    const user = await User.findByPk(req.userId);
 
-    await Notification.create({
-      content: `Nova inscrição de ${userSubscribe.name}, ${formattedDate}`,
-      user: meetup.user_id,
+    await Mail.sendMail({
+      to: `${meetup.organizer.name} <${meetup.organizer.email}>`,
+      subject: 'Nova inscrição',
+      template: 'subscription',
+      context: {
+        organizer: meetup.organizer.name,
+        user: user.name,
+        userEmail: user.email,
+      },
     });
+
     return res.json(subscription);
   }
 }
