@@ -6,6 +6,7 @@ import SignUp from '../pages/SignUp';
 
 import Create from '../pages/Create';
 import Edit from '../pages/Edit';
+import Details from '../pages/Details';
 
 import Dashboard from '../pages/Dashboard';
 import Profile from '../pages/Profile';
@@ -15,10 +16,11 @@ export default function Routes() {
     <Switch>
       <Route path="/" exact component={SignIn} />
       <Route path="/register" component={SignUp} />
-      <Route path="/create" component={Create} />
-      <Route path="/edit" component={Edit} />
       <Route path="/dashboard" component={Dashboard} />
-      <Route path="/profile" component={Profile} />
+      <Route path="/create" component={Create} />
+      <Route path="/edit/:id" component={Edit} />
+      <Route path="/details/:id" component={Details} />
+      <Route path="/profile/:userId" component={Profile} />
     </Switch>
   );
 }
