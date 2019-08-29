@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Form, Input } from '@rocketseat/unform';
 import logo from '~/assets/logo.svg';
@@ -8,6 +8,7 @@ import { signInRequest } from '~/store/modules/auth/actions';
 
 export default function SignIn() {
   const dispatch = useDispatch();
+  const loading = useSelector(state => state.auth.loading);
 
   function handleSubmit({ email, password }) {
     dispatch(signInRequest(email, password));
@@ -23,7 +24,7 @@ export default function SignIn() {
           type="password"
           placeholder="Sua senha secreta"
         />
-        <button type="submit">Entrar</button>
+        <button type="submit">{loading ? 'Carregando...' : 'Entrar'}</button>
         <Link to="/register">Criar conta grátis</Link>
       </Form>
     </>
