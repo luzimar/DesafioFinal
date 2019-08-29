@@ -1,11 +1,17 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Form, Input } from '@rocketseat/unform';
 import logo from '~/assets/logo.svg';
 import SignInSchemaValidator from '~/schemaValidators/SignInSchemaValidator';
+import { signInRequest } from '~/store/modules/auth/actions';
 
 export default function SignIn() {
-  function handleSubmit(data) {}
+  const dispatch = useDispatch();
+
+  function handleSubmit({ email, password }) {
+    dispatch(signInRequest(email, password));
+  }
 
   return (
     <>
