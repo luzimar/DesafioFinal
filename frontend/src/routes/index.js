@@ -23,7 +23,7 @@ export default function Routes() {
       <Route path="/create" component={Create} isPrivate />
       <Route path="/edit/:id" component={Edit} isPrivate />
       <Route path="/details/:id" component={Details} isPrivate />
-      <Route path="/profile/:userId" component={Profile} isPrivate />
+      <Route path="/profile" component={Profile} isPrivate />
       <Route path="*" component={NotFound} isNotFound />
     </Switch>
   );
