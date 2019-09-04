@@ -1,10 +1,17 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
 import logo from '~/assets/logo.svg';
-
 import { Container, Content } from './styles';
+import { signOut } from '~/store/modules/auth/actions';
 
 export default function Header() {
+  const user = useSelector(state => state.user.profile);
+  const dispatch = useDispatch();
+
+  function logout() {
+    dispatch(signOut());
+  }
   return (
     <Container>
       <Content>
@@ -13,10 +20,10 @@ export default function Header() {
         </Link>
         <aside>
           <div>
-            <strong>Luzimar Oliveira</strong>
+            <strong>{user.name}</strong>
             <Link to="/profile">Meu perfil</Link>
           </div>
-          <button>Sair</button>
+          <button onClick={logout}>Sair</button>
         </aside>
       </Content>
     </Container>
