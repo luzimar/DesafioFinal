@@ -2,9 +2,11 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Form, Input } from '@rocketseat/unform';
+import { BounceLoader } from 'react-spinners';
 import logo from '~/assets/logo.svg';
 import SignInSchemaValidator from '~/schemaValidators/SignInSchemaValidator';
 import { signInRequest } from '~/store/modules/auth/actions';
+import Loading from '~/styles/loading';
 
 export default function SignIn() {
   const dispatch = useDispatch();
@@ -24,7 +26,15 @@ export default function SignIn() {
           type="password"
           placeholder="Sua senha secreta"
         />
-        <button type="submit">{loading ? 'Carregando...' : 'Entrar'}</button>
+        <button type="submit">
+          {loading ? (
+            <Loading>
+              <BounceLoader sizeUnit="px" size={34} color="#fff" />
+            </Loading>
+          ) : (
+            'Entrar'
+          )}
+        </button>
         <Link to="/register">Criar conta grátis</Link>
       </Form>
     </>

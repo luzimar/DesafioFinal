@@ -10,6 +10,12 @@ export function* signIn({ payload }) {
 
     const response = yield call(api.post, 'sessions', { email, password });
 
+    if (!response.data.success) {
+      toast.warn(response.data.message);
+      yield put(signFailure());
+      return;
+    }
+
     const { token, user } = response.data;
 
     api.defaults.headers.Authorization = `Bearer ${token}`;
@@ -26,7 +32,12 @@ export function* signIn({ payload }) {
 export function* signUp({ payload }) {
   try {
     const { name, email, password } = payload;
-    yield call(api.post, 'users', { name, email, password });
+    const response = yield call(api.post, 'users', { name, email, password });
+    if (!response.data.success) {
+      toast.warn(response.data.message);
+      yield put(signFailure());
+      return;
+    }
     yield put(signUpSuccess());
     history.push('/');
   } catch (error) {
