@@ -1,10 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Route, Redirect } from 'react-router-dom';
-
+import { useSelector } from 'react-redux';
 import AuthLayout from '~/pages/_layouts/auth';
 import DefaultLayout from '~/pages/_layouts/default';
-import { store } from '~/store';
 
 export default function RouteWrapper({
   component: Component,
@@ -12,7 +11,7 @@ export default function RouteWrapper({
   isNotFound,
   ...rest
 }) {
-  const { signed } = store.getState().auth;
+  const { signed } = useSelector(state => state.auth);
 
   if (isNotFound) {
     return <Route {...rest} component={Component} />;
