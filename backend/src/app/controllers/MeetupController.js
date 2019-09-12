@@ -7,111 +7,157 @@ import File from '../models/File';
 
 class MeetupController {
   async index(req, res) {
-    const page = req.query.page || 1;
-    const where = {};
+    try {
+      const page = req.query.page || 1;
+      const where = {};
 
-    if (req.query.date) {
-      const date = parseISO(req.query.date);
+      if (req.query.date) {
+        const date = parseISO(req.query.date);
 
-      where.date = {
-        [Op.between]: [startOfDay(date), endOfDay(date)],
-      };
+        where.date = {
+          [Op.between]: [startOfDay(date), endOfDay(date)],
+        };
+      }
+
+      const meetups = await Meetup.findAll({
+        where,
+        order: ['date'],
+        attributes: ['id', 'title', 'description', 'location', 'date'],
+        include: [
+          {
+            model: User,
+            as: 'organizer',
+            attributes: ['id', 'name', 'email'],
+          },
+          {
+            model: File,
+            as: 'banner',
+            attributes: ['id', 'path', 'url'],
+          },
+        ],
+        limit: 10,
+        offset: (page - 1) * 10,
+      });
+
+      return res.json({
+        success: true,
+        meetups,
+      });
+    } catch (error) {
+      return res.json({
+        success: false,
+        message: 'An error occurred while get meetups :(',
+      });
     }
-
-    const meetups = await Meetup.findAll({
-      where,
-      order: ['date'],
-      attributes: ['id', 'title', 'description', 'location', 'date'],
-      include: [
-        {
-          model: User,
-          as: 'organizer',
-          attributes: ['id', 'name', 'email'],
-        },
-        {
-          model: File,
-          as: 'banner',
-          attributes: ['id', 'path', 'url'],
-        },
-      ],
-      limit: 10,
-      offset: (page - 1) * 10,
-    });
-
-    return res.json(meetups);
   }
 
   async store(req, res) {
-    const schema = Yup.object().shape({
-      file_id: Yup.number().required(),
-      title: Yup.string().required(),
-      description: Yup.string().required(),
-      location: Yup.string().required(),
-      date: Yup.date().required(),
-    });
+    try {
+      const schema = Yup.object().shape({
+        file_id: Yup.number().required(),
+        title: Yup.string().required(),
+        description: Yup.string().required(),
+        location: Yup.string().required(),
+        date: Yup.date().required(),
+      });
 
-    if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Validation fails' });
+      if (!(await schema.isValid(req.body))) {
+        return res.json({ success: false, message: 'Validation fails' });
+      }
+
+      const { date } = req.body;
+
+      if (isBefore(parseISO(date), new Date())) {
+        return res.json({ success: false, message: 'Meetup date invalid' });
+      }
+
+      const meetup = await Meetup.create({
+        ...req.body,
+        user_id: req.userId,
+      });
+
+      return res.json({
+        success: true,
+        meetup,
+      });
+    } catch (error) {
+      return res.json({
+        success: false,
+        message: 'An error occurred while creating meetup :(',
+      });
     }
-
-    const { date } = req.body;
-
-    if (isBefore(parseISO(date), new Date())) {
-      return res.status(400).json({ error: 'Meetup date invalid' });
-    }
-
-    const meetup = await Meetup.create({
-      ...req.body,
-      user_id: req.userId,
-    });
-
-    return res.json(meetup);
   }
 
   async update(req, res) {
-    const schema = Yup.object().shape({
-      file_id: Yup.number(),
-      title: Yup.string(),
-      description: Yup.string(),
-      location: Yup.string(),
-      date: Yup.date(),
-    });
+    try {
+      const schema = Yup.object().shape({
+        file_id: Yup.number(),
+        title: Yup.string(),
+        description: Yup.string(),
+        location: Yup.string(),
+        date: Yup.date(),
+      });
 
-    if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Validation fails' });
+      if (!(await schema.isValid(req.body))) {
+        return res.json({ error: 'Validation fails' });
+      }
+
+      const meetup = await Meetup.findByPk(req.params.id);
+      if (meetup.user_id !== req.userId) {
+        return res.json({ success: false, message: 'Not authorized' });
+      }
+
+      const { date } = req.body;
+
+      if (isBefore(parseISO(date), new Date())) {
+        return res.json({ success: false, message: 'Meetup date invalid' });
+      }
+
+      if (meetup.past) {
+        return res.json({
+          success: false,
+          message: 'Event has already occurred',
+        });
+      }
+
+      await meetup.update(req.body);
+      return res.json({
+        success: true,
+        meetup,
+      });
+    } catch (error) {
+      return res.json({
+        success: false,
+        message: 'An error occurred while updating meetup :(',
+      });
     }
-
-    const meetup = await Meetup.findByPk(req.params.id);
-    if (meetup.user_id !== req.userId) {
-      return res.status(400).json({ error: 'Not authorized' });
-    }
-
-    const { date } = req.body;
-
-    if (isBefore(parseISO(date), new Date())) {
-      return res.status(400).json({ error: 'Meetup date invalid' });
-    }
-
-    if (meetup.past) {
-      return res.status(400).json({ error: 'Event has already occurred' });
-    }
-
-    await meetup.update(req.body);
-    return res.json(meetup);
   }
 
   async delete(req, res) {
-    const meetup = await Meetup.findByPk(req.params.id);
-    if (meetup.user_id !== req.userId) {
-      return res.status(400).json({ error: 'Not authorized' });
-    }
-    if (meetup.past) {
-      return res.status(400).json({ error: "Can't delete past meetups" });
-    }
+    try {
+      const meetup = await Meetup.findByPk(req.params.id);
+      if (meetup.user_id !== req.userId) {
+        return res.json({ success: false, message: 'Not authorized' });
+      }
+      if (meetup.past) {
+        return res.json({
+          success: false,
+          message: "Can't delete past meetups",
+        });
+      }
 
-    await meetup.destroy();
+      await meetup.destroy();
 
-    return res.json({ sucess: 'Meetup deleted successfully' });
+      return res.json({
+        success: true,
+        message: 'Meetup deleted successfully',
+      });
+    } catch (error) {
+      return res.json({
+        success: false,
+        message: 'An error occurred while deleting meetup :(',
+      });
+    }
   }
 }
 

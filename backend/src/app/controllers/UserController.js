@@ -8,31 +8,41 @@ class UserController {
   }
 
   async store(req, res) {
-    const schema = Yup.object().shape({
-      name: Yup.string().required(),
-      email: Yup.string()
-        .email()
-        .required(),
-      password: Yup.string()
-        .required()
-        .min(6),
-    });
+    try {
+      const schema = Yup.object().shape({
+        name: Yup.string().required(),
+        email: Yup.string()
+          .email()
+          .required(),
+        password: Yup.string()
+          .required()
+          .min(6),
+      });
 
-    if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Validation fails' });
+      if (!(await schema.isValid(req.body))) {
+        return res.json({ success: false, message: 'Validation fails' });
+      }
+
+      const userExists = await User.findOne({
+        where: { email: req.body.email },
+      });
+
+      if (userExists) {
+        return res.json({ success: false, message: 'User already exists.' });
+      }
+      const { id, name, email } = await User.create(req.body);
+      return res.json({
+        success: true,
+        id,
+        name,
+        email,
+      });
+    } catch (error) {
+      return res.json({
+        success: false,
+        message: 'An error occurred while creating user :(',
+      });
     }
-
-    const userExists = await User.findOne({ where: { email: req.body.email } });
-
-    if (userExists) {
-      return res.status(400).json({ error: 'User already exists.' });
-    }
-    const { id, name, email } = await User.create(req.body);
-    return res.json({
-      id,
-      name,
-      email,
-    });
   }
 
   async update(req, res) {
@@ -51,7 +61,7 @@ class UserController {
     });
 
     if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Validation fails' });
+      return res.json({ success: false, message: 'Validation fails' });
     }
     const { email, oldPassword, password } = req.body;
     const user = await User.findByPk(req.userId);
@@ -60,30 +70,34 @@ class UserController {
       const userExists = await User.findOne({ where: { email } });
 
       if (userExists) {
-        return res.status(400).json({ error: 'User already exists.' });
+        return res.json({ success: false, message: 'User already exists.' });
       }
     }
 
     if (password && !oldPassword) {
-      return res.status(401).json({ error: 'Old password not provided' });
+      return res.json({ success: false, message: 'Old password not provided' });
     }
 
     if (oldPassword && !(await user.checkPassword(oldPassword))) {
-      return res.status(401).json({ error: 'Password does not match' });
+      return res.json({ success: false, message: 'Password does not match' });
     }
 
     try {
       const { id, name } = await user.update(req.body);
 
       return res.json({
-        id,
-        name,
-        email,
+        success: true,
+        user: {
+          id,
+          name,
+          email,
+        },
       });
     } catch (error) {
-      return res
-        .status(400)
-        .json({ error: 'An error occurred while updating user :(' });
+      return res.json({
+        success: false,
+        message: 'An error occurred while updating user :(',
+      });
     }
   }
 }
