@@ -16,7 +16,7 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
-import './config/ReactotronConfig';
+import '~/config/ReactotronConfig';
 
 const styles = StyleSheet.create({
   scrollView: {
