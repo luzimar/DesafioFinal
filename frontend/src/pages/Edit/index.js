@@ -22,6 +22,8 @@ export default function Edit({ match }) {
   registerLocale('pt', pt);
 
   const [title, setTitle] = useState(meetup.title);
+  const [description, setDescription] = useState(meetup.description);
+  const [location, setLocation] = useState(meetup.location);
 
   const dta = parseISO(meetup.date);
   const [startDate, setStartDate] = useState(dta);
@@ -45,7 +47,8 @@ export default function Edit({ match }) {
         />
         <Textarea
           name="description"
-          value={meetup.description}
+          value={description}
+          onChange={e => setDescription(e.target.value)}
           placeholder="Descrição completa"
           rows={6}
         />
@@ -63,7 +66,8 @@ export default function Edit({ match }) {
         <Input name="date" value={startDate} hidden />
         <Input
           name="location"
-          value={meetup.location}
+          value={location}
+          onChange={e => setLocation(e.target.value)}
           placeholder="Localização"
         />
         <div className="btn-save-meetup">

@@ -25,6 +25,8 @@ export function* createMeetup({ payload }) {
     }
     yield put(meetupSuccess());
 
+    toast.success('Evento created successfully');
+
     history.push('/dashboard');
   } catch (err) {
     toast.error('Falha ao criar meetup, verifique os dados');
@@ -35,7 +37,6 @@ export function* createMeetup({ payload }) {
 export function* editMeetup({ payload }) {
   try {
     const { id, file_id, title, description, location, date } = payload;
-    console.log(payload);
 
     const response = yield call(api.put, `meetups/${id}`, {
       file_id,
@@ -50,9 +51,9 @@ export function* editMeetup({ payload }) {
       return;
     }
     yield put(meetupSuccess());
+    toast.success('Evento updated successfully');
     history.push('/dashboard');
   } catch (error) {
-    console.log(error);
     toast.error('Falha ao editar meetup, verifique os dados');
     yield put(meetupFailure());
   }
@@ -61,16 +62,17 @@ export function* editMeetup({ payload }) {
 export function* deleteMeetup({ payload }) {
   try {
     const { id } = payload;
-    const response = yield call(api.delete, 'meetups', {
-      id,
-    });
+
+    const response = yield call(api.delete, `meetups/${id}`);
+
     if (!response.data.success) {
       toast.warn(response.data.message);
       yield put(meetupFailure());
       return;
     }
     yield put(meetupSuccess());
-    history.push('/');
+    toast.success('Evento deleted successfully');
+    history.push('/dashboard');
   } catch (error) {
     toast.error('Falha ao deletar meetup, tente novamente mais tarde');
     yield put(meetupFailure());
@@ -79,7 +81,7 @@ export function* deleteMeetup({ payload }) {
 
 export function* getMeetups() {
   try {
-    const response = yield call(api.get, 'meetups');
+    const response = yield call(api.get, 'meetupsByOrganizer');
     if (!response.data.success) {
       toast.warn(response.data.message);
       yield put(meetupFailure());
@@ -93,6 +95,8 @@ export function* getMeetups() {
         { locale: pt }
       );
     });
+
+    console.tron.log(response.data.meetups);
 
     yield put(getMeetupsSuccess(response.data.meetups));
   } catch (error) {

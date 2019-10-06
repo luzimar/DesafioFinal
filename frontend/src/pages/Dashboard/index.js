@@ -28,21 +28,25 @@ export default function Dashboard() {
         </Link>
       </header>
 
-      <ul>
-        {meetups.map(meetup => (
-          <Time key={meetup.id}>
-            <strong>{meetup.title}</strong>
-            <div>
-              <span>{meetup.formattedDate}</span>
-              <Link to={`/details/${meetup.id}`}>
-                <button>
-                  <MdKeyboardArrowRight size={24} color="#fff" />
-                </button>
-              </Link>
-            </div>
-          </Time>
-        ))}
-      </ul>
+      {meetups.length > 0 ? (
+        <ul>
+          {meetups.map(meetup => (
+            <Time key={meetup.id}>
+              <strong>{meetup.title}</strong>
+              <div>
+                <span>{meetup.formattedDate}</span>
+                <Link to={`/details/${meetup.id}`}>
+                  <button>
+                    <MdKeyboardArrowRight size={24} color="#fff" />
+                  </button>
+                </Link>
+              </div>
+            </Time>
+          ))}
+        </ul>
+      ) : (
+        <p>Nenhum meetup criado...</p>
+      )}
     </Container>
   );
 }

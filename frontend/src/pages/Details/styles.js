@@ -65,7 +65,7 @@ export const EditButton = styled.button`
   transition: background 0.2s;
 
   &:hover {
-    background: ${darken(0.03, '#1CACF4')};
+    background: ${darken(0.08, '#1CACF4')};
   }
 
   svg {
@@ -88,7 +88,7 @@ export const DeleteButton = styled.button`
   transition: background 0.2s;
 
   &:hover {
-    background: ${darken(0.03, '#f94d6a')};
+    background: ${darken(0.08, '#f94d6a')};
   }
 
   svg {

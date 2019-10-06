@@ -1,5 +1,5 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   MdEdit,
   MdDeleteForever,
@@ -9,14 +9,37 @@ import {
 import { Link } from 'react-router-dom';
 
 import { Container, EditButton, DeleteButton, Description } from './styles';
+import { deleteMeetupRequest } from '~/store/modules/meetup/actions';
+import Modal from '~/components/Modal';
 
 export default function Details({ match }) {
   const id = Number(decodeURIComponent(match.params.id));
   const meetups = useSelector(state => state.meetup.meetups);
   const meetup = meetups.find(m => m.id === id);
+  const dispatch = useDispatch();
+  const [modalShow, setModalShow] = useState(false);
+
+  const showModal = () => {
+    setModalShow(true);
+  };
+
+  const hideModal = () => {
+    setModalShow(false);
+  };
+
+  const handleConfirm = id => {
+    setModalShow(false);
+    dispatch(deleteMeetupRequest(id));
+  };
 
   return (
     <Container>
+      <Modal
+        description="Deseja confirmar o cancelamento deste evento?"
+        show={modalShow}
+        handleClose={hideModal}
+        handleConfirm={() => handleConfirm(meetup.id)}
+      />
       <header>
         <h1>{meetup.title}</h1>
         <div>
@@ -26,12 +49,10 @@ export default function Details({ match }) {
               Editar
             </EditButton>
           </Link>
-          <Link to="/dashboard">
-            <DeleteButton>
-              <MdDeleteForever size={20} color="#fff" />
-              Cancelar
-            </DeleteButton>
-          </Link>
+          <DeleteButton onClick={showModal}>
+            <MdDeleteForever size={20} color="#fff" />
+            Cancelar
+          </DeleteButton>
         </div>
       </header>
 

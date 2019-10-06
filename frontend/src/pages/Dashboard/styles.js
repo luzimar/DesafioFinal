@@ -7,6 +7,13 @@ export const Container = styled.div`
   display: flex;
   flex-direction: column;
 
+  p {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 16px;
+    color: #fff;
+  }
+
   header {
     display: flex;
     align-items: center;
@@ -32,7 +39,7 @@ export const Container = styled.div`
       transition: background 0.2s;
 
       &:hover {
-        background: ${darken(0.03, '#f94d6a')};
+        background: ${darken(0.08, '#f94d6a')};
       }
 
       svg {

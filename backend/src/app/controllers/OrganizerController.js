@@ -1,4 +1,6 @@
 import Meetup from '../models/Meetup';
+import User from '../models/User';
+import File from '../models/File';
 
 class OrganizerController {
   async index(req, res) {
@@ -6,9 +8,23 @@ class OrganizerController {
       where: {
         user_id: req.userId,
       },
+      order: ['date'],
+      attributes: ['id', 'title', 'description', 'location', 'date'],
+      include: [
+        {
+          model: User,
+          as: 'organizer',
+          attributes: ['id', 'name', 'email'],
+        },
+        {
+          model: File,
+          as: 'banner',
+          attributes: ['id', 'path', 'url'],
+        },
+      ],
     });
 
-    return res.json(meetups);
+    return res.json({ success: true, meetups });
   }
 }
 

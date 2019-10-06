@@ -31,6 +31,11 @@ export default createGlobalStyle`
 
   a {
     text-decoration: none;
+    transition: 0.2s;
+  }
+
+  a:hover{
+    opacity: 0.8;
   }
 
   ul {
