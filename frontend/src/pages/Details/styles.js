@@ -24,9 +24,10 @@ export const Container = styled.div`
 
   img {
     margin-top: 50px;
-    max-width: 900px;
-    max-height: 300px;
+    max-width: 100%;
+    height: 300px;
     border-radius: 4px;
+    object-fit: cover;
   }
 
   div {
