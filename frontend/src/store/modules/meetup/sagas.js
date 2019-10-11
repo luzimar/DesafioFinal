@@ -19,17 +19,18 @@ export function* createMeetup({ payload }) {
     });
 
     if (!response.data.success) {
-      toast.warn(response.data.message);
+      response.data.message.map(m => toast.warn(m));
       yield put(meetupFailure());
       return;
     }
     yield put(meetupSuccess());
 
-    toast.success('Evento created successfully');
+    toast.success(response.data.message);
 
     history.push('/dashboard');
   } catch (err) {
-    toast.error('Falha ao criar meetup, verifique os dados');
+    toast.error('Algo deu errado ao criar Meetup, verifique seus dados');
+
     yield put(meetupFailure());
   }
 }
@@ -46,15 +47,15 @@ export function* editMeetup({ payload }) {
       date,
     });
     if (!response.data.success) {
-      toast.warn(response.data.message);
+      response.data.message.map(m => toast.warn(m));
       yield put(meetupFailure());
       return;
     }
     yield put(meetupSuccess());
-    toast.success('Evento updated successfully');
+    toast.success(response.data.message);
     history.push('/dashboard');
   } catch (error) {
-    toast.error('Falha ao editar meetup, verifique os dados');
+    toast.error('Algo deu errado ao editar meetup, verifique os dados');
     yield put(meetupFailure());
   }
 }
@@ -71,10 +72,12 @@ export function* deleteMeetup({ payload }) {
       return;
     }
     yield put(meetupSuccess());
-    toast.success('Evento deleted successfully');
+    toast.success(response.data.message);
     history.push('/dashboard');
   } catch (error) {
-    toast.error('Falha ao deletar meetup, tente novamente mais tarde');
+    toast.error(
+      'Algo deu errado ao cancelar meetup, tente novamente mais tarde'
+    );
     yield put(meetupFailure());
   }
 }
@@ -96,11 +99,11 @@ export function* getMeetups() {
       );
     });
 
-    console.tron.log(response.data.meetups);
-
     yield put(getMeetupsSuccess(response.data.meetups));
   } catch (error) {
-    toast.error('Falha ao listar meetups, tente novamente mais tarde');
+    toast.error(
+      'Algo deu errado ao listar meetups, tente novamente mais tarde'
+    );
     yield put(meetupFailure());
   }
 }

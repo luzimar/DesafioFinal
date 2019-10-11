@@ -17,7 +17,7 @@ export function* editUser({ payload }) {
     });
 
     if (!response.data.success) {
-      toast.warn(response.data.message);
+      response.data.message.map(m => toast.warn(m));
       yield put(editUserFailure());
       return;
     }
@@ -25,10 +25,10 @@ export function* editUser({ payload }) {
     const { user } = response.data;
 
     yield put(editUserSuccess(user));
-
+    toast.success(response.data.message);
     history.push('/dashboard');
   } catch (err) {
-    toast.error('Falha na edição do perfil, verifique seus dados');
+    toast.error('Algo deu errado na edição do usuário, verifique seus dados');
     yield put(editUserFailure());
   }
 }

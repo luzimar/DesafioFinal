@@ -24,7 +24,7 @@ export function* signIn({ payload }) {
 
     history.push('/dashboard');
   } catch (err) {
-    toast.error('Falha na autenticação, verifique seus dados');
+    toast.error('Algo deu errado na autenticação, verifique seus dados');
     yield put(signFailure());
   }
 }
@@ -34,14 +34,15 @@ export function* signUp({ payload }) {
     const { name, email, password } = payload;
     const response = yield call(api.post, 'users', { name, email, password });
     if (!response.data.success) {
-      toast.warn(response.data.message);
+      response.data.message.map(m => toast.warn(m));
       yield put(signFailure());
       return;
     }
     yield put(signUpSuccess());
+    toast.success(response.data.message);
     history.push('/');
   } catch (error) {
-    toast.error('Falha no cadastro, verifique seus dados');
+    toast.error('Algo deu errado no cadastro, verifique seus dados');
     yield put(signFailure());
   }
 }
