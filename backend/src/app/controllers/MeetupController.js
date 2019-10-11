@@ -1,5 +1,4 @@
 import { Op } from 'sequelize';
-import * as Yup from 'yup';
 import { parseISO, isBefore, startOfDay, endOfDay } from 'date-fns';
 import Meetup from '../models/Meetup';
 import User from '../models/User';
@@ -46,29 +45,17 @@ class MeetupController {
     } catch (error) {
       return res.json({
         success: false,
-        message: 'An error occurred while get meetups :(',
+        message: 'Algo deu errado ao listar os meetups :(',
       });
     }
   }
 
   async store(req, res) {
     try {
-      const schema = Yup.object().shape({
-        file_id: Yup.number().required(),
-        title: Yup.string().required(),
-        description: Yup.string().required(),
-        location: Yup.string().required(),
-        date: Yup.date().required(),
-      });
-
-      if (!(await schema.isValid(req.body))) {
-        return res.json({ success: false, message: 'Validation fails' });
-      }
-
       const { date } = req.body;
 
       if (isBefore(parseISO(date), new Date())) {
-        return res.json({ success: false, message: 'Meetup date invalid' });
+        return res.json({ success: false, message: 'Data inválida' });
       }
 
       const meetup = await Meetup.create({
@@ -78,57 +65,47 @@ class MeetupController {
 
       return res.json({
         success: true,
+        message: 'Meetup criado com sucesso :)',
         meetup,
       });
     } catch (error) {
       return res.json({
         success: false,
-        message: 'An error occurred while creating meetup :(',
+        message: 'Algo deu errado ao criar o meetup, verifique seus dados :(',
       });
     }
   }
 
   async update(req, res) {
     try {
-      const schema = Yup.object().shape({
-        file_id: Yup.number(),
-        title: Yup.string(),
-        description: Yup.string(),
-        location: Yup.string(),
-        date: Yup.date(),
-      });
-
-      if (!(await schema.isValid(req.body))) {
-        return res.json({ error: 'Validation fails' });
-      }
-
       const meetup = await Meetup.findByPk(req.params.id);
       if (meetup.user_id !== req.userId) {
-        return res.json({ success: false, message: 'Not authorized' });
+        return res.json({ success: false, message: 'Não autorizado' });
       }
 
       const { date } = req.body;
 
       if (isBefore(parseISO(date), new Date())) {
-        return res.json({ success: false, message: 'Meetup date invalid' });
+        return res.json({ success: false, message: 'Data inválida' });
       }
 
       if (meetup.past) {
         return res.json({
           success: false,
-          message: 'Event has already occurred',
+          message: 'Meetup já ocorreu',
         });
       }
 
       await meetup.update(req.body);
       return res.json({
         success: true,
+        message: 'Meetup editado com sucesso :)',
         meetup,
       });
     } catch (error) {
       return res.json({
         success: false,
-        message: 'An error occurred while updating meetup :(',
+        message: 'Algo deu errado ao atualizar o meetup :(',
       });
     }
   }
@@ -137,12 +114,12 @@ class MeetupController {
     try {
       const meetup = await Meetup.findByPk(req.params.id);
       if (meetup.user_id !== req.userId) {
-        return res.json({ success: false, message: 'Not authorized' });
+        return res.json({ success: false, message: 'Não autorizado' });
       }
       if (meetup.past) {
         return res.json({
           success: false,
-          message: "Can't delete past meetups",
+          message: 'Não é possível cancelar meetups que já ocorreram',
         });
       }
 
@@ -150,12 +127,12 @@ class MeetupController {
 
       return res.json({
         success: true,
-        message: 'Meetup deleted successfully',
+        message: 'Meetup cancelado com sucesso',
       });
     } catch (error) {
       return res.json({
         success: false,
-        message: 'An error occurred while deleting meetup :(',
+        message: 'Algo deu errado ao cancelar o meetup :(',
       });
     }
   }

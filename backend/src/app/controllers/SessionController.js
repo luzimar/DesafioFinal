@@ -9,11 +9,11 @@ class SessionController {
       const user = await User.findOne({ where: { email } });
 
       if (!user) {
-        return res.json({ success: false, message: 'User not found' });
+        return res.json({ success: false, message: 'Usuário não encontrado' });
       }
 
       if (!(await user.checkPassword(password))) {
-        return res.json({ success: false, message: 'Incorrect password' });
+        return res.json({ success: false, message: 'Senha incorreta' });
       }
 
       const { id, name } = user;
@@ -32,7 +32,7 @@ class SessionController {
     } catch (error) {
       return res.json({
         success: false,
-        message: 'An error occurred while login :(',
+        message: 'Algo deu errado ao fazer login, verifique seus dados :(',
       });
     }
   }

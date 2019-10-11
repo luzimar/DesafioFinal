@@ -44,15 +44,15 @@ class SubscriptionController {
     });
 
     if (meetup.user_id === req.userId) {
-      return res
-        .status(400)
-        .json({ error: "Can't subscribe to you own meetups" });
+      return res.status(400).json({
+        error: 'Não é possível se inscrever em seus próprios meetups',
+      });
     }
 
     if (meetup.past) {
       return res
         .status(400)
-        .json({ error: "Can't subscribe, meetup has already occurred" });
+        .json({ error: 'Inscrição não realizada, meetup já ocorreu :(' });
     }
 
     const alreadySubscribed = await Subscription.findOne({
@@ -71,9 +71,10 @@ class SubscriptionController {
     });
 
     if (alreadySubscribed) {
-      return res
-        .status(400)
-        .json({ error: "Can't subscribe to two meetups at the same time" });
+      return res.status(400).json({
+        error:
+          'Não é possível se inscrver em mais de um meetup do mesmo horário',
+      });
     }
 
     const subscription = await Subscription.create({

@@ -17,7 +17,8 @@ class FileController {
     } catch (error) {
       return res.json({
         success: false,
-        message: 'An error occurred while uploading file :(',
+        message:
+          'Algo deu errado ao fazer o upload de arquivo, verifique seus dados :(',
       });
     }
   }
