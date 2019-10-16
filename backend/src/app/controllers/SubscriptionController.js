@@ -1,94 +1,173 @@
 import { Op } from 'sequelize';
+import { parseISO, startOfDay, endOfDay } from 'date-fns';
 import Meetup from '../models/Meetup';
 import Subscription from '../models/Subscription';
 import User from '../models/User';
 import SubscriptionMail from '../jobs/SubscriptionMail';
+import File from '../models/File';
 
 import Queue from '../../lib/Queue';
 
 class SubscriptionController {
   async index(req, res) {
-    const subscriptions = await Subscription.findAll({
-      where: {
+    try {
+      const page = req.query.page || 1;
+      const where = {
         user_id: req.userId,
-      },
-      include: [
-        {
-          model: Meetup,
-          where: {
-            date: {
-              [Op.gt]: new Date(),
-            },
-          },
-          required: true,
-        },
-        {
-          model: User,
-        },
-      ],
-      order: [[Meetup, 'date']],
-    });
+      };
 
-    return res.json(subscriptions);
+      if (req.query.date) {
+        const date = parseISO(req.query.date);
+
+        where.createdAt = {
+          [Op.between]: [startOfDay(date), endOfDay(date)],
+        };
+      }
+
+      const subscriptions = await Subscription.findAll({
+        where,
+        include: [
+          {
+            model: Meetup,
+            where: {
+              date: {
+                [Op.gt]: new Date(),
+              },
+            },
+            include: [
+              {
+                model: User,
+                as: 'organizer',
+                attributes: ['id', 'name', 'email'],
+              },
+              {
+                model: File,
+                as: 'banner',
+                attributes: ['id', 'path', 'url'],
+              },
+            ],
+            required: true,
+          },
+          {
+            model: User,
+          },
+        ],
+        limit: 10,
+        offset: (page - 1) * 10,
+        order: [[Meetup, 'date']],
+      });
+
+      return res.json({
+        success: true,
+        subscriptions,
+      });
+    } catch (error) {
+      return res.json({
+        success: false,
+        message: 'Algo deu errado ao listar os meetups :(',
+      });
+    }
   }
 
   async store(req, res) {
-    const meetup = await Meetup.findByPk(req.params.meetupId, {
-      include: [
-        {
-          model: User,
-          as: 'organizer',
-          attributes: ['name', 'email'],
-        },
-      ],
-    });
-
-    if (meetup.user_id === req.userId) {
-      return res.status(400).json({
-        error: 'Não é possível se inscrever em seus próprios meetups',
-      });
-    }
-
-    if (meetup.past) {
-      return res
-        .status(400)
-        .json({ error: 'Inscrição não realizada, meetup já ocorreu :(' });
-    }
-
-    const alreadySubscribed = await Subscription.findOne({
-      where: {
-        user_id: req.userId,
-      },
-      include: [
-        {
-          model: Meetup,
-          required: true,
-          where: {
-            date: meetup.date,
+    try {
+      const meetup = await Meetup.findByPk(req.params.meetupId, {
+        include: [
+          {
+            model: User,
+            as: 'organizer',
+            attributes: ['name', 'email'],
           },
-        },
-      ],
-    });
+        ],
+      });
 
-    if (alreadySubscribed) {
-      return res.status(400).json({
-        error:
-          'Não é possível se inscrver em mais de um meetup do mesmo horário',
+      if (meetup.user_id === req.userId) {
+        return res.json({
+          success: false,
+          message: 'Não é possível se inscrever em seus próprios meetups',
+        });
+      }
+
+      if (meetup.past) {
+        return res.json({
+          success: false,
+          message: 'Inscrição não realizada, meetup já ocorreu :(',
+        });
+      }
+
+      const alreadySubscribed = await Subscription.findOne({
+        where: {
+          user_id: req.userId,
+        },
+        include: [
+          {
+            model: Meetup,
+            required: true,
+            where: {
+              date: meetup.date,
+            },
+          },
+        ],
+      });
+
+      if (alreadySubscribed) {
+        return res.json({
+          success: false,
+          message:
+            'Não é possível se inscrver em mais de um meetup do mesmo horário',
+        });
+      }
+
+      const subscription = await Subscription.create({
+        user_id: req.userId,
+        meetup_id: meetup.id,
+      });
+
+      const user = await User.findByPk(req.userId);
+
+      await Queue.add(SubscriptionMail.key, {
+        meetup,
+        user,
+      });
+      return res.json({
+        success: true,
+        message: 'Inscrição realizada com sucesso :)',
+        subscription,
+      });
+    } catch (error) {
+      return res.json({
+        success: false,
+        message: 'Algo deu errado ao listar as inscrições :(',
       });
     }
+  }
 
-    const subscription = await Subscription.create({
-      user_id: req.userId,
-      meetup_id: meetup.id,
-    });
+  async delete(req, res) {
+    try {
+      const subscription = await Subscription.findByPk(req.params.id);
+      if (subscription.user_id !== req.userId) {
+        return res.json({ success: false, message: 'Não autorizado' });
+      }
+      if (subscription.past) {
+        return res.json({
+          success: false,
+          message:
+            'Não é possível cancelar inscrições de meetups que já ocorreram',
+        });
+      }
 
-    const user = await User.findByPk(req.userId);
+      await subscription.destroy();
 
-    await Queue.add(SubscriptionMail.key, {
-      meetup,
-      user,
-    });
-    return res.json(subscription);
+      return res.json({
+        success: true,
+        message: 'Inscrição cancelada com sucesso',
+      });
+    } catch (error) {
+      return res.json({
+        success: false,
+        message: 'Algo deu errado ao cancelar a inscrição :(',
+      });
+    }
   }
 }
 

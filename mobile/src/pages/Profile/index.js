@@ -1,10 +1,18 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Button } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { signOut } from '~/store/modules/auth/actions';
+import { useDispatch } from 'react-redux';
+import { SubmitButton } from './styles';
+
 export default function Profile() {
+  const dispatch = useDispatch();
+  function handleSignOut() {
+    dispatch(signOut());
+  }
   return (
     <View>
-      <Text>Profile</Text>
+      <SubmitButton onPress={handleSignOut}>Sair</SubmitButton>
     </View>
   );
 }
