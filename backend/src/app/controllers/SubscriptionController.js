@@ -114,7 +114,7 @@ class SubscriptionController {
         return res.json({
           success: false,
           message:
-            'Não é possível se inscrver em mais de um meetup do mesmo horário',
+            'Não é possível se inscrever em mais de um meetup do mesmo horário',
         });
       }
 

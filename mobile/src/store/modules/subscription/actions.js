@@ -5,6 +5,12 @@ export function createSubscriptionRequest(meetupId) {
   };
 }
 
+export function createSubscriptionSuccess() {
+  return {
+    type: '@subscription/CREATE_SUBSCRIPTION_SUCCESS',
+  };
+}
+
 export function cancelSubscriptionRequest(id) {
   return {
     type: '@subscription/CANCEL_SUBSCRIPTION_REQUEST',
@@ -12,11 +18,14 @@ export function cancelSubscriptionRequest(id) {
   };
 }
 
-export function subscriptionSuccess() {
+export function cancelSubscriptionSuccess(id) {
   return {
-    type: '@subscription/SUBSCRIPTION_SUCCESS',
+    type: '@subscription/CANCEL_SUBSCRIPTION_SUCCESS',
+    payload: { id },
   };
 }
+
+
 
 export function subscriptionFailure() {
   return {

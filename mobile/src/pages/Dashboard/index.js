@@ -1,28 +1,60 @@
-import React, { useState, useMemo, useEffect } from 'react';
-import { format, addDays, subDays } from 'date-fns';
+import React, { useState, useMemo, useCallback } from 'react';
+import { format, addDays, subDays, parseISO } from 'date-fns';
 import pt from 'date-fns/locale/pt';
 
-import { FlatList, TouchableOpacity } from 'react-native';
+import { FlatList, TouchableOpacity, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { Container, Day, DayText } from './styles';
 import Meetup from '~/components/Meetup';
 import Background from '~/components/Background';
-import { getMeetupsRequest } from '~/store/modules/meetup/actions';
-import { createSubscriptionRequest } from '~/store/modules/subscription/actions';
-import { useDispatch, useSelector } from 'react-redux';
+import api from '~/services/api';
+import { showMessage } from 'react-native-flash-message';
+import { useFocusEffect } from 'react-navigation-hooks';
 
 export default function Dashboard() {
-  const dispatch = useDispatch();
-  const meetups = useSelector(state => state.meetup.meetups);
+  const [meetups, setMeetups] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [date, setDate] = useState(new Date());
   const dateFormatted = useMemo(
     () => format(date, "d 'de' MMMM", { locale: pt }),
     [date]
   );
 
-  useEffect(() => {
-    dispatch(getMeetupsRequest(date));
-  }, [[], date]);
+  useFocusEffect(
+    useCallback(() => {
+      loadMeetups();
+      return;
+    }, [date])
+  );
+
+  async function loadMeetups() {
+    try {
+      setLoading(true);
+      const response = await api.get('meetups', { params: { date } });
+      if (!response.data.success) {
+        showMessage({
+          message: response.data.message,
+          type: 'warning',
+        });
+        return;
+      }
+      response.data.meetups.forEach(meetup => {
+        meetup.formattedDate = format(
+          parseISO(meetup.date),
+          "dd 'de' MMMM', às ' HH:mm'h'",
+          { locale: pt }
+        );
+      });
+      setLoading(false);
+      setMeetups(response.data.meetups);
+    } catch (error) {
+      showMessage({
+        message:
+          'Algo deu errado ao listar meetups, que tal reinciar o aplicativo?',
+        type: 'danger',
+      });
+    }
+  }
 
   function handleNextDay() {
     setDate(addDays(date, 1));
@@ -32,9 +64,29 @@ export default function Dashboard() {
     setDate(subDays(date, 1));
   }
 
-  function handleAddSubscription(id) {
-    console.tron.log(id);
-    dispatch(createSubscriptionRequest(id));
+  async function handleAddSubscription(id) {
+    //dispatch(createSubscriptionRequest(id));
+
+    try {
+      const response = await api.post(`subscriptions/${id}`);
+
+      if (!response.data.success) {
+        showMessage({
+          message: response.data.message,
+          type: 'warning',
+        });
+        return;
+      }
+      showMessage({
+        message: response.data.message,
+        type: 'success',
+      });
+    } catch (err) {
+      showMessage({
+        message: 'Algo deu errado ao se inscrever no meetup, tente novamente',
+        type: 'danger',
+      });
+    }
   }
 
   return (
@@ -49,17 +101,21 @@ export default function Dashboard() {
             <Icon name="chevron-right" size={20} color="#fff" />
           </TouchableOpacity>
         </Day>
-        <FlatList
-          data={meetups}
-          keyExtrator={item => String(item.id)}
-          renderItem={({ item }) => (
-            <Meetup
-              data={item}
-              buttonText="Realizar inscrição"
-              handleAction={() => handleAddSubscription(item.id)}
-            />
-          )}
-        />
+        {loading ? (
+          <ActivityIndicator size="large" color="#0000ff" />
+        ) : (
+          <FlatList
+            data={meetups}
+            keyExtrator={item => String(item.id)}
+            renderItem={({ item }) => (
+              <Meetup
+                data={item}
+                buttonText="Realizar inscrição"
+                handleAction={() => handleAddSubscription(item.id)}
+              />
+            )}
+          />
+        )}
       </Container>
     </Background>
   );

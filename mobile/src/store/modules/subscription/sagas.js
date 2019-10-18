@@ -4,7 +4,8 @@ import { format, parseISO } from 'date-fns';
 import { pt } from 'date-fns/locale';
 import api from '~/services/api';
 import {
-  subscriptionSuccess,
+  createSubscriptionSuccess,
+  cancelSubscriptionSuccess,
   subscriptionFailure,
   getSubscriptionsSuccess,
 } from './actions';
@@ -24,13 +25,13 @@ export function* createSubscription({ payload }) {
       yield put(subscriptionFailure());
       return;
     }
-    yield put(subscriptionSuccess());
+    yield put(createSubscriptionSuccess());
 
     showMessage({
       message: response.data.message,
       type: 'success',
     });
-    navigate('Subscription');
+    //navigate('Subscription');
   } catch (err) {
     showMessage({
       message: 'Algo deu errado ao se inscrever no meetup, tente novamente',
@@ -54,12 +55,12 @@ export function* cancelSubscription({ payload }) {
       yield put(subscriptionFailure());
       return;
     }
-    yield put(subscriptionSuccess());
+    yield put(cancelSubscriptionSuccess(id));
     showMessage({
       message: response.data.message,
       type: 'success',
     });
-    navigate('Dashboard');
+    //navigate('Dashboard');
   } catch (error) {
     showMessage({
       message: 'Algo deu errado ao cancelar sua inscrição :C',

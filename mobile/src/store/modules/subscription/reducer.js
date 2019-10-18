@@ -14,13 +14,19 @@ export default function subscription(state = INITIAL_STATE, action) {
         draft.loading = true;
         break;
       }
-      case '@subscription/SUBSCRIPTION_SUCCESS': {
+      case '@subscription/CREATE_SUBSCRIPTION_SUCCESS': {
         draft.loading = false;
         break;
       }
       case '@subscription/GET_SUBSCRIPTIONS_SUCCESS': {
         draft.loading = false;
         draft.subscriptions = action.payload.data;
+        break;
+      }
+      case '@subscription/CANCEL_SUBSCRIPTION_SUCCESS': {
+        draft.subscriptions = state.subscriptions.filter(
+          item => item.id != action.payload.id
+        );
         break;
       }
       case '@subscription/SUBSCRIPTION_FAILURE': {
