@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { BounceLoader } from 'react-spinners';
 import { Container } from './styles';
 import EditProfileSchemaValidator from '~/schemaValidators/EditProfileSchemaValidator';
-import { editUserRequest } from '~/store/modules/user/actions';
+import { updateProfileRequest } from '~/store/modules/user/actions';
 
 import Loading from '~/styles/loading';
 
@@ -24,7 +24,7 @@ export default function Profile() {
     confirmPassword,
   }) {
     dispatch(
-      editUserRequest(name, email, oldPassword, password, confirmPassword)
+      updateProfileRequest(name, email, oldPassword, password, confirmPassword)
     );
   }
 

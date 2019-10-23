@@ -5,14 +5,19 @@ export default async (req, res, next) => {
     const schema = Yup.object().shape({
       name: Yup.string(),
       email: Yup.string(),
-      oldPassword: Yup.string().min(6),
-      password: Yup.string()
-        .min(6)
-        .when('oldPassword', (oldPassword, field) =>
-          oldPassword ? field.required() : field
-        ),
+      oldPassword: Yup.string(),
+      password: Yup.string().when('oldPassword', (oldPassword, field) =>
+        oldPassword
+          ? field.min(6, 'Senha deve ter no mínimo 6 caracteres')
+          : field
+      ),
       confirmPassword: Yup.string().when('password', (password, field) =>
-        password ? field.required().oneOf([Yup.ref('password')]) : field
+        password
+          ? field.oneOf(
+              [Yup.ref('password')],
+              'Confirmação de senha não confere'
+            )
+          : field
       ),
     });
     await schema.validate(req.body, { abortEarly: false });

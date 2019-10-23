@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useCallback } from 'react';
-import { format, addDays, subDays, parseISO, set } from 'date-fns';
+import { format, addDays, subDays, parseISO } from 'date-fns';
 import pt from 'date-fns/locale/pt';
 
 import { FlatList, TouchableOpacity, ActivityIndicator } from 'react-native';
@@ -106,7 +106,7 @@ export default function Subscription() {
           </TouchableOpacity>
         </Day>
         {loading ? (
-          <ActivityIndicator size="large" color="#0000ff" />
+          <ActivityIndicator size="large" color="#749CCC" />
         ) : (
           <FlatList
             data={subscriptions}

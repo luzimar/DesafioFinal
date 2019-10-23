@@ -17,6 +17,9 @@ class SessionController {
       }
 
       const { id, name } = user;
+      const token = jwt.sign({ id }, authConfig.secret, {
+        expiresIn: authConfig.expiresIn,
+      });
 
       return res.json({
         success: true,
@@ -25,9 +28,7 @@ class SessionController {
           name,
           email,
         },
-        token: jwt.sign({ id }, authConfig.secret, {
-          expiresIn: authConfig.expiresIn,
-        }),
+        token,
       });
     } catch (error) {
       return res.json({

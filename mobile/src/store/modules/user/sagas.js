@@ -1,9 +1,9 @@
 import { takeLatest, call, put, all } from 'redux-saga/effects';
 import { showMessage } from 'react-native-flash-message';
 import api from '~/services/api';
-import { editUserSuccess, editUserFailure } from './actions';
+import { updateProfileSuccess, updateProfileFailure } from './actions';
 
-export function* editUser({ payload }) {
+export function* updateProfile({ payload }) {
   try {
     const { name, email, oldPassword, password, confirmPassword } = payload;
 
@@ -20,22 +20,25 @@ export function* editUser({ payload }) {
         message: response.data.message,
         type: 'warning',
       });
-      yield put(editUserFailure());
+      yield put(updateProfileFailure());
       return;
     }
 
     const { user } = response.data;
 
-    yield put(editUserSuccess(user));
-
+    yield put(updateProfileSuccess(user));
+    showMessage({
+      message: response.data.message,
+      type: 'success',
+    });
     //history.push('/dashboard');
   } catch (err) {
     showMessage({
       message: 'Algo deu errao na atualização de perfil, verifique seus dados',
       type: 'danger',
     });
-    yield put(editUserFailure());
+    yield put(updateProfileFailure());
   }
 }
 
-export default all([takeLatest('@user/EDIT_USER_REQUEST', editUser)]);
+export default all([takeLatest('@user/UPDATE_PROFILE_REQUEST', updateProfile)]);

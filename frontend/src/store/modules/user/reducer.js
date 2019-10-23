@@ -12,16 +12,16 @@ export default function user(state = INITIAL_STATE, action) {
         draft.profile = action.payload.user;
         break;
       }
-      case '@user/EDIT_USER_SUCCESS': {
+      case '@user/UPDATE_PROFILE_SUCCESS': {
         draft.profile = action.payload.user;
         draft.loading = false;
         break;
       }
-      case '@user/EDIT_USER_REQUEST': {
+      case '@user/UPDATE_PROFILE_REQUEST': {
         draft.loading = true;
         break;
       }
-      case '@user/EDIT_USER_FAILURE': {
+      case '@user/UPDATE_PROFILE_FAILURE': {
         draft.loading = false;
         break;
       }

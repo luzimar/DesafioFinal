@@ -1,4 +1,4 @@
-export function editUserRequest(
+export function updateProfileRequest(
   name,
   email,
   oldPassword,
@@ -6,20 +6,20 @@ export function editUserRequest(
   confirmPassword
 ) {
   return {
-    type: '@user/EDIT_USER_REQUEST',
+    type: '@user/UPDATE_PROFILE_REQUEST',
     payload: { name, email, oldPassword, password, confirmPassword },
   };
 }
 
-export function editUserSuccess(user) {
+export function updateProfileSuccess(user) {
   return {
-    type: '@user/EDIT_USER_SUCCESS',
+    type: '@user/UPDATE_PROFILE_SUCCESS',
     payload: { user },
   };
 }
 
-export function editUserFailure() {
+export function updateProfileFailure() {
   return {
-    type: '@user/EDIT_USER_FAILURE',
+    type: '@user/UPDATE_PROFILE_FAILURE',
   };
 }

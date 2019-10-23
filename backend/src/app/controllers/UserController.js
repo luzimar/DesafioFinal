@@ -64,7 +64,7 @@ class UserController {
 
       return res.json({
         success: true,
-        message: 'Usuário editado com sucesso',
+        message: 'Perfil atualizado com sucesso',
         user: {
           id,
           name,
