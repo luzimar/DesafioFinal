@@ -13,8 +13,6 @@ export default function Profile() {
   const dispatch = useDispatch();
   const loading = useSelector(state => state.user.loading);
   const user = useSelector(state => state.user.profile);
-  const [profileName, setProfileName] = useState(user.name);
-  const [profileEmail, setProfileEmail] = useState(user.email);
 
   function handleSubmit({
     name,
@@ -30,18 +28,14 @@ export default function Profile() {
 
   return (
     <Container>
-      <Form schema={EditProfileSchemaValidator} onSubmit={handleSubmit}>
-        <Input
-          name="name"
-          value={profileName}
-          onChange={e => setProfileName(e.target.value)}
-        />
+      <Form
+        schema={EditProfileSchemaValidator}
+        initialData={user}
+        onSubmit={handleSubmit}
+      >
+        <Input name="name" />
 
-        <Input
-          name="email"
-          value={profileEmail}
-          onChange={e => setProfileEmail(e.target.value)}
-        />
+        <Input name="email" />
 
         <hr />
         <Input type="password" name="oldPassword" placeholder="Senha atual" />

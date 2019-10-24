@@ -19,7 +19,7 @@ export function* createMeetup({ payload }) {
     });
 
     if (!response.data.success) {
-      response.data.message.map(m => toast.warn(m));
+      toast.warn(response.data.message);
       yield put(meetupFailure());
       return;
     }
@@ -47,7 +47,7 @@ export function* editMeetup({ payload }) {
       date,
     });
     if (!response.data.success) {
-      response.data.message.map(m => toast.warn(m));
+      toast.warn(response.data.message);
       yield put(meetupFailure());
       return;
     }
@@ -55,6 +55,7 @@ export function* editMeetup({ payload }) {
     toast.success(response.data.message);
     history.push('/dashboard');
   } catch (error) {
+    console.log(error);
     toast.error('Algo deu errado ao editar meetup, verifique os dados');
     yield put(meetupFailure());
   }

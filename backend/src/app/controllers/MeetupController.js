@@ -105,7 +105,7 @@ class MeetupController {
     } catch (error) {
       return res.json({
         success: false,
-        message: 'Algo deu errado ao atualizar o meetup :(',
+        message: 'Algo deu errado ao editar o meetup :(',
       });
     }
   }

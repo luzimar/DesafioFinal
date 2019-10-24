@@ -6,19 +6,8 @@ export default async (req, res, next) => {
       name: Yup.string(),
       email: Yup.string(),
       oldPassword: Yup.string(),
-      password: Yup.string().when('oldPassword', (oldPassword, field) =>
-        oldPassword
-          ? field.min(6, 'Senha deve ter no mínimo 6 caracteres')
-          : field
-      ),
-      confirmPassword: Yup.string().when('password', (password, field) =>
-        password
-          ? field.oneOf(
-              [Yup.ref('password')],
-              'Confirmação de senha não confere'
-            )
-          : field
-      ),
+      password: Yup.string(),
+      confirmPassword: Yup.string(),
     });
     await schema.validate(req.body, { abortEarly: false });
     return next();

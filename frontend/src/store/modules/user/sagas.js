@@ -6,15 +6,13 @@ import history from '~/services/history';
 
 export function* updateProfile({ payload }) {
   try {
-    const { name, email, oldPassword, password, confirmPassword } = payload;
+    const { name, email, ...rest } = payload;
 
-    const response = yield call(api.put, 'users', {
-      name,
-      email,
-      oldPassword,
-      password,
-      confirmPassword,
-    });
+    const profile = Object.assign(
+      { name, email },
+      rest.oldPassword ? rest : {}
+    );
+    const response = yield call(api.put, 'users', profile);
 
     if (!response.data.success) {
       response.data.message.map(m => toast.warn(m));

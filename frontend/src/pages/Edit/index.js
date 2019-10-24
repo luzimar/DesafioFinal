@@ -21,34 +21,29 @@ export default function Edit({ match }) {
   const file_id = useSelector(state => state.file.id);
   registerLocale('pt', pt);
 
-  const [title, setTitle] = useState(meetup.title);
-  const [description, setDescription] = useState(meetup.description);
-  const [location, setLocation] = useState(meetup.location);
-
   const dta = parseISO(meetup.date);
   const [startDate, setStartDate] = useState(dta);
 
   function handleSubmit({ title, description, location, date }) {
     const file = file_id || meetup.banner.id;
+    console.log(
+      `${id}, ${file}, ${title}, ${description}, ${location}, ${date}`
+    );
     dispatch(editMeetupRequest(id, file, title, description, location, date));
   }
-  // const id = decodeURIComponent(match.params.id);
-  // const title = `Meetup de React Native ${id}`;
+
   return (
     <Container>
-      <Form schema={EditMeetupSchemaValidator} onSubmit={handleSubmit}>
+      <Form
+        schema={EditMeetupSchemaValidator}
+        initialData={meetup}
+        onSubmit={handleSubmit}
+      >
         <ImageInput src={meetup.banner.url} />
         <Input name="file_id" value={meetup.banner.id} hidden />
-        <Input
-          name="title"
-          value={title}
-          onChange={e => setTitle(e.target.value)}
-          placeholder="Título do Meetup"
-        />
+        <Input name="title" placeholder="Título do Meetup" />
         <Textarea
           name="description"
-          value={description}
-          onChange={e => setDescription(e.target.value)}
           placeholder="Descrição completa"
           rows={6}
         />
@@ -64,12 +59,7 @@ export default function Edit({ match }) {
           placeholderText="Data do meetup"
         />
         <Input name="date" value={startDate} hidden />
-        <Input
-          name="location"
-          value={location}
-          onChange={e => setLocation(e.target.value)}
-          placeholder="Localização"
-        />
+        <Input name="location" placeholder="Localização" />
         <div className="btn-save-meetup">
           <button type="submit">
             {loading ? (
