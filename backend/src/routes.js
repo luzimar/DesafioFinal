@@ -9,7 +9,7 @@ import MeetupController from './app/controllers/MeetupController';
 import SubscriptionController from './app/controllers/SubscriptionController';
 import OrganizerController from './app/controllers/OrganizerController';
 
-import { validateUserStore, validateUserUpdate } from './app/validators/user';
+import { validateUserStore } from './app/validators/user';
 import {
   validateMeetupStore,
   validateMeetupUpdate,
@@ -23,7 +23,7 @@ routes.post('/users', validateUserStore, UserController.store);
 routes.post('/sessions', SessionController.store);
 
 routes.use(authMiddleware);
-routes.put('/users', validateUserUpdate, UserController.update);
+routes.put('/users', UserController.update);
 routes.post('/files', upload.single('file'), FileController.store);
 routes.get('/meetups', MeetupController.index);
 routes.post('/meetups', validateMeetupStore, MeetupController.store);

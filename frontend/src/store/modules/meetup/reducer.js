@@ -10,7 +10,7 @@ export default function meetup(state = INITIAL_STATE, action) {
     switch (action.type) {
       case '@meetup/GET_MEETUPS_REQUEST':
       case '@meetup/CREATE_MEETUP_REQUEST':
-      case '@meetup/EDIT_MEETUP_REQUEST':
+      case '@meetup/UPDATE_MEETUP_REQUEST':
       case '@meetup/DELETE_MEETUP_REQUEST': {
         draft.loading = true;
         break;

@@ -35,7 +35,7 @@ export function* createMeetup({ payload }) {
   }
 }
 
-export function* editMeetup({ payload }) {
+export function* updateMeetup({ payload }) {
   try {
     const { id, file_id, title, description, location, date } = payload;
 
@@ -111,7 +111,7 @@ export function* getMeetups() {
 
 export default all([
   takeLatest('@meetup/CREATE_MEETUP_REQUEST', createMeetup),
-  takeLatest('@meetup/EDIT_MEETUP_REQUEST', editMeetup),
+  takeLatest('@meetup/UPDATE_MEETUP_REQUEST', updateMeetup),
   takeLatest('@meetup/DELETE_MEETUP_REQUEST', deleteMeetup),
   takeLatest('@meetup/GET_MEETUPS_REQUEST', getMeetups),
 ]);

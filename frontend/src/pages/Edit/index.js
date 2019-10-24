@@ -7,7 +7,7 @@ import DatePicker, { registerLocale } from 'react-datepicker';
 import { pt } from 'date-fns/locale';
 import { parseISO } from 'date-fns';
 import { Container } from './styles';
-import { editMeetupRequest } from '~/store/modules/meetup/actions';
+import { updateMeetupRequest } from '~/store/modules/meetup/actions';
 import EditMeetupSchemaValidator from '~/schemaValidators/EditMeetupSchemaValidator';
 import ImageInput from '~/components/ImageInput';
 import Loading from '~/styles/loading';
@@ -26,10 +26,7 @@ export default function Edit({ match }) {
 
   function handleSubmit({ title, description, location, date }) {
     const file = file_id || meetup.banner.id;
-    console.log(
-      `${id}, ${file}, ${title}, ${description}, ${location}, ${date}`
-    );
-    dispatch(editMeetupRequest(id, file, title, description, location, date));
+    dispatch(updateMeetupRequest(id, file, title, description, location, date));
   }
 
   return (

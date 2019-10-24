@@ -11,7 +11,7 @@ export function createMeetupRequest(
   };
 }
 
-export function editMeetupRequest(
+export function updateMeetupRequest(
   id,
   file_id,
   title,
@@ -20,7 +20,7 @@ export function editMeetupRequest(
   date
 ) {
   return {
-    type: '@meetup/EDIT_MEETUP_REQUEST',
+    type: '@meetup/UPDATE_MEETUP_REQUEST',
     payload: { id, file_id, title, description, location, date },
   };
 }

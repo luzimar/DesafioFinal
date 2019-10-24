@@ -33,7 +33,7 @@ class UserController {
   }
 
   async update(req, res) {
-    const { email, oldPassword, password } = req.body;
+    const { email, oldPassword } = req.body;
     const user = await User.findByPk(req.userId);
 
     if (email !== user.email) {
@@ -42,21 +42,13 @@ class UserController {
       if (userExists) {
         return res.json({
           success: false,
-          message:
-            'Já existe um usuário com o e-mail fornecido para atualização',
+          message: 'Já existe um usuário com o e-mail informado',
         });
       }
     }
 
-    if (password && !oldPassword) {
-      return res.json({
-        success: false,
-        message: 'Senha antiga não fornecida',
-      });
-    }
-
     if (oldPassword && !(await user.checkPassword(oldPassword))) {
-      return res.json({ success: false, message: 'Senha antiga incorreta' });
+      return res.json({ success: false, message: 'Senha atual inválida' });
     }
 
     try {
@@ -64,7 +56,7 @@ class UserController {
 
       return res.json({
         success: true,
-        message: 'Perfil atualizado com sucesso',
+        message: 'Perfil editado com sucesso',
         user: {
           id,
           name,
@@ -74,8 +66,7 @@ class UserController {
     } catch (error) {
       return res.json({
         success: false,
-        message:
-          'Algo deu errado ao atualizar usuário, verifique seus dados :(',
+        message: 'Algo deu errado ao editar perfil, verifique seus dados :(',
       });
     }
   }

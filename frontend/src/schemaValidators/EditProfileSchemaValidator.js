@@ -13,7 +13,9 @@ const editMeetupSchemaValidator = Yup.object().shape(
     }),
     password: Yup.string().when('oldPassword', {
       is: val => val != '',
-      then: Yup.string().required('Senha é obrigatória'),
+      then: Yup.string()
+        .required('Senha é obrigatória')
+        .min(6, 'Senha deve ter no míninmo 6 caracteres'),
       otherwise: Yup.string(),
     }),
     confirmPassword: Yup.string().when('password', (password, field) =>

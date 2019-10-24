@@ -15,7 +15,7 @@ export function* updateProfile({ payload }) {
     const response = yield call(api.put, 'users', profile);
 
     if (!response.data.success) {
-      response.data.message.map(m => toast.warn(m));
+      toast.warn(response.data.message);
       yield put(updateProfileFailure());
       return;
     }
@@ -26,7 +26,7 @@ export function* updateProfile({ payload }) {
     toast.success(response.data.message);
     history.push('/dashboard');
   } catch (err) {
-    toast.error('Algo deu errado na edição do usuário, verifique seus dados');
+    toast.error('Algo deu errado ao editar perfil, verifique seus dados :(');
     yield put(updateProfileFailure());
   }
 }
