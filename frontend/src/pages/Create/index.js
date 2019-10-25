@@ -6,7 +6,7 @@ import { pt } from 'date-fns/locale';
 import { useDispatch, useSelector } from 'react-redux';
 import { BounceLoader } from 'react-spinners';
 import { Container } from './styles';
-import CreateMeetupSchemaValidator from '~/schemaValidators/CreateMeetupSchemaValidator';
+import { schemaCreate } from '~/schemaValidators/meetup';
 import { createMeetupRequest } from '~/store/modules/meetup/actions';
 import ImageInput from '~/components/ImageInput';
 
@@ -23,11 +23,9 @@ export default function Create() {
     dispatch(createMeetupRequest(file_id, title, description, location, date));
   }
 
-  // const id = decodeURIComponent(match.params.id);
-  // const title = `Meetup de React Native ${id}`;
   return (
     <Container>
-      <Form schema={CreateMeetupSchemaValidator} onSubmit={handleSubmit}>
+      <Form schema={schemaCreate} onSubmit={handleSubmit}>
         <ImageInput src="" />
         <Input name="file_id" value={file_id} hidden />
         <Input name="title" placeholder="Título do Meetup" />

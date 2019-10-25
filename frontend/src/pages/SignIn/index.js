@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { Form, Input } from '@rocketseat/unform';
 import { BounceLoader } from 'react-spinners';
 import logo from '~/assets/logo.svg';
-import SignInSchemaValidator from '~/schemaValidators/SignInSchemaValidator';
+import { validateSignIn } from '~/schemaValidators/auth';
 import { signInRequest } from '~/store/modules/auth/actions';
 import Loading from '~/styles/loading';
 
@@ -19,7 +19,7 @@ export default function SignIn() {
   return (
     <>
       <img src={logo} alt="Meetapp" />
-      <Form schema={SignInSchemaValidator} onSubmit={handleSubmit}>
+      <Form schema={validateSignIn} onSubmit={handleSubmit}>
         <Input name="email" type="email" placeholder="Digite seu e-mail" />
         <Input
           name="password"

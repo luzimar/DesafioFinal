@@ -8,7 +8,7 @@ import { pt } from 'date-fns/locale';
 import { parseISO } from 'date-fns';
 import { Container } from './styles';
 import { updateMeetupRequest } from '~/store/modules/meetup/actions';
-import EditMeetupSchemaValidator from '~/schemaValidators/EditMeetupSchemaValidator';
+import { schemaUpdate } from '~/schemaValidators/meetup';
 import ImageInput from '~/components/ImageInput';
 import Loading from '~/styles/loading';
 
@@ -31,11 +31,7 @@ export default function Edit({ match }) {
 
   return (
     <Container>
-      <Form
-        schema={EditMeetupSchemaValidator}
-        initialData={meetup}
-        onSubmit={handleSubmit}
-      >
+      <Form schema={schemaUpdate} initialData={meetup} onSubmit={handleSubmit}>
         <ImageInput src={meetup.banner.url} />
         <Input name="file_id" value={meetup.banner.id} hidden />
         <Input name="title" placeholder="Título do Meetup" />

@@ -22,6 +22,10 @@ export const SubmitButton = styled(Button)`
   margin-top: 5px;
 `;
 
+export const SubmitButtonText = styled.Text`
+  font-size: 18px;
+`;
+
 export const SignLink = styled.TouchableOpacity`
   margin-top: 20px;
 `;

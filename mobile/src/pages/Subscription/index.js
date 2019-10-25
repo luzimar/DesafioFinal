@@ -68,6 +68,7 @@ export default function Subscription() {
 
   async function handleCancelSubscription(id) {
     try {
+      setLoading(true);
       const response = await api.delete(`subscriptions/${id}`);
 
       if (!response.data.success) {
@@ -75,6 +76,7 @@ export default function Subscription() {
           message: response.data.message,
           type: 'warning',
         });
+        setLoading(false);
         return;
       }
       showMessage({
@@ -90,6 +92,8 @@ export default function Subscription() {
         message: 'Algo deu errado ao cancelar sua inscrição :C',
         type: 'warning',
       });
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -106,7 +110,7 @@ export default function Subscription() {
           </TouchableOpacity>
         </Day>
         {loading ? (
-          <ActivityIndicator size="large" color="#749CCC" />
+          <ActivityIndicator size="large" color="#f94d6a" />
         ) : (
           <FlatList
             data={subscriptions}

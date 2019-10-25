@@ -13,7 +13,10 @@ class UserController {
       });
 
       if (userExists) {
-        return res.json({ success: false, message: 'Usuário já existe' });
+        return res.json({
+          success: false,
+          message: 'E-mail já utilizado',
+        });
       }
       const { id, name, email } = await User.create(req.body);
       return res.json({
@@ -42,7 +45,7 @@ class UserController {
       if (userExists) {
         return res.json({
           success: false,
-          message: 'Já existe um usuário com o e-mail informado',
+          message: 'E-mail já utilizado',
         });
       }
     }

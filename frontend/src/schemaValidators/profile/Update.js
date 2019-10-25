@@ -1,6 +1,6 @@
 import * as Yup from 'yup';
 
-const editMeetupSchemaValidator = Yup.object().shape(
+const obj = Yup.object().shape(
   {
     name: Yup.string().required('O nome é obrigatório'),
     email: Yup.string()
@@ -27,4 +27,4 @@ const editMeetupSchemaValidator = Yup.object().shape(
   ['password', 'oldPassword']
 );
 
-export default editMeetupSchemaValidator;
+export default obj;

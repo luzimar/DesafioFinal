@@ -45,7 +45,6 @@ export default function Dashboard() {
           { locale: pt }
         );
       });
-      setLoading(false);
       setMeetups(response.data.meetups);
     } catch (error) {
       showMessage({
@@ -53,6 +52,8 @@ export default function Dashboard() {
           'Algo deu errado ao listar meetups, que tal reinciar o aplicativo?',
         type: 'danger',
       });
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -65,9 +66,8 @@ export default function Dashboard() {
   }
 
   async function handleAddSubscription(id) {
-    //dispatch(createSubscriptionRequest(id));
-
     try {
+      setLoading(true);
       const response = await api.post(`subscriptions/${id}`);
 
       if (!response.data.success) {
@@ -86,6 +86,8 @@ export default function Dashboard() {
         message: 'Algo deu errado ao se inscrever no meetup, tente novamente',
         type: 'danger',
       });
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -102,7 +104,7 @@ export default function Dashboard() {
           </TouchableOpacity>
         </Day>
         {loading ? (
-          <ActivityIndicator size="large" color="#0000ff" />
+          <ActivityIndicator size="large" color="#f94d6a" />
         ) : (
           <FlatList
             data={meetups}

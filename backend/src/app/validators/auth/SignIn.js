@@ -3,12 +3,12 @@ import * as Yup from 'yup';
 export default async (req, res, next) => {
   try {
     const schema = Yup.object().shape({
-      file_id: Yup.number(),
-      title: Yup.string(),
-      description: Yup.string(),
-      location: Yup.string(),
-      date: Yup.date(),
+      email: Yup.string()
+        .email('E-mail inválido')
+        .required('Informe o e-mail'),
+      password: Yup.string().required('Informe a senha'),
     });
+
     await schema.validate(req.body, { abortEarly: false });
     return next();
   } catch (error) {
@@ -16,7 +16,7 @@ export default async (req, res, next) => {
       success: false,
       message:
         error.inner.length > 1
-          ? error.inner.map(m => m.message)
+          ? error.inner.map(m => `${m.message}\n`)
           : error.message,
     });
   }

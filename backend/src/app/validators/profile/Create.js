@@ -9,7 +9,7 @@ export default async (req, res, next) => {
         .required('E-mail é obrigatório'),
       password: Yup.string()
         .required('Senha é obrigatória')
-        .min(6, 'Senha deve ter no míninmo 6 caracteres'),
+        .min(6, 'Senha deve ter no mínimo 6 caracteres'),
     });
 
     await schema.validate(req.body, { abortEarly: false });
@@ -19,7 +19,7 @@ export default async (req, res, next) => {
       success: false,
       message:
         error.inner.length > 1
-          ? error.inner.map(m => m.message)
+          ? error.inner.map(m => `${m.message}\n`)
           : error.message,
     });
   }

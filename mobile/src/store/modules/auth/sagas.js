@@ -2,6 +2,7 @@ import { takeLatest, call, put, all } from 'redux-saga/effects';
 import { showMessage } from 'react-native-flash-message';
 import api from '~/services/api';
 import { signInSuccess, signFailure, signUpSuccess } from './actions';
+import { navigate } from '~/services/navigation';
 
 export function* signIn({ payload }) {
   try {
@@ -23,8 +24,6 @@ export function* signIn({ payload }) {
     api.defaults.headers.Authorization = `Bearer ${token}`;
 
     yield put(signInSuccess(token, user));
-
-    //history.push('/dashboard');
   } catch (err) {
     showMessage({
       message: 'Algo deu errado na autenticação, verifique seus dados',
@@ -38,6 +37,7 @@ export function* signIn({ payload }) {
 export function* signUp({ payload }) {
   try {
     const { name, email, password } = payload;
+
     const response = yield call(api.post, 'users', { name, email, password });
     if (!response.data.success) {
       showMessage({
@@ -48,7 +48,12 @@ export function* signUp({ payload }) {
       return;
     }
     yield put(signUpSuccess());
-    //history.push('/');
+    showMessage({
+      message: response.data.message,
+      type: 'success',
+    });
+
+    navigate('SignIn');
   } catch (error) {
     showMessage({
       message: 'Algo deu errado no cadastro, verifique seus dados',

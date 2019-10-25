@@ -3,6 +3,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import { signOut } from '~/store/modules/auth/actions';
 import { updateProfileRequest } from '~/store/modules/user/actions';
 import { useDispatch, useSelector } from 'react-redux';
+import { ActivityIndicator } from 'react-native';
 import {
   Container,
   Separator,
@@ -18,7 +19,8 @@ import Background from '~/components/Background';
 export default function Profile() {
   const dispatch = useDispatch();
   const profile = useSelector(state => state.user.profile);
-
+  const loadingProfile = useSelector(state => state.user.loading);
+  const loadingAuth = useSelector(state => state.auth.loading);
   const [name, setName] = useState(profile.name);
   const [email, setEmail] = useState(profile.email);
   const [oldPassword, setOldPassword] = useState('');
@@ -102,10 +104,10 @@ export default function Profile() {
             onChangeText={setConfirmPassword}
           />
 
-          <SubmitButton onPress={handleUpdateProfile}>
+          <SubmitButton onPress={handleUpdateProfile} loading={loadingProfile}>
             <SubmitButtonText>Salvar perfil</SubmitButtonText>
           </SubmitButton>
-          <ExitButton onPress={handleSignOut}>
+          <ExitButton onPress={handleSignOut} loading={loadingAuth}>
             <ExitButtonText>Sair do Meetapp</ExitButtonText>
           </ExitButton>
         </Form>

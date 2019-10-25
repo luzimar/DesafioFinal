@@ -4,7 +4,7 @@ import { Form, Input } from '@rocketseat/unform';
 import { useDispatch, useSelector } from 'react-redux';
 import { BounceLoader } from 'react-spinners';
 import { Container } from './styles';
-import EditProfileSchemaValidator from '~/schemaValidators/EditProfileSchemaValidator';
+import { validateUpdateProfile } from '~/schemaValidators/profile';
 import { updateProfileRequest } from '~/store/modules/user/actions';
 
 import Loading from '~/styles/loading';
@@ -29,7 +29,7 @@ export default function Profile() {
   return (
     <Container>
       <Form
-        schema={EditProfileSchemaValidator}
+        schema={validateUpdateProfile}
         initialData={user}
         onSubmit={handleSubmit}
       >

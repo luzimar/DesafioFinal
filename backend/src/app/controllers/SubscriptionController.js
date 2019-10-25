@@ -29,11 +29,6 @@ class SubscriptionController {
         include: [
           {
             model: Meetup,
-            where: {
-              date: {
-                [Op.gt]: new Date(),
-              },
-            },
             include: [
               {
                 model: User,

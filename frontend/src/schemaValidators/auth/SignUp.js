@@ -1,6 +1,6 @@
 import * as Yup from 'yup';
 
-const signUpSchemaValidator = Yup.object().shape({
+const obj = Yup.object().shape({
   name: Yup.string().required('O nome é obrigatório'),
   email: Yup.string()
     .email('Informe um e-mail válido')
@@ -9,5 +9,4 @@ const signUpSchemaValidator = Yup.object().shape({
     .min(6, 'Senha deve ter no mínimo 6 caracteres')
     .required('A senha é obrigatória'),
 });
-
-export default signUpSchemaValidator;
+export default obj;
