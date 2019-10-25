@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { Form, Input } from '@rocketseat/unform';
 import { BounceLoader } from 'react-spinners';
 import logo from '~/assets/logo.svg';
-import { validateSignUp } from '~/schemaValidators/auth';
+import { schemaSignUp } from '~/schemaValidators/auth';
 import { signUpRequest } from '~/store/modules/auth/actions';
 import Loading from '~/styles/loading';
 
@@ -19,7 +19,7 @@ export default function SignUp() {
   return (
     <>
       <img src={logo} alt="Meetapp" />
-      <Form schema={validateSignUp} onSubmit={handleSubmit}>
+      <Form schema={schemaSignUp} onSubmit={handleSubmit}>
         <Input name="name" type="text" placeholder="Nome completo" />
         <Input name="email" type="email" placeholder="Digite seu e-mail" />
         <Input

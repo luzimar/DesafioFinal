@@ -1,3 +1,3 @@
-import validateUpdateProfile from './Update';
+import schemaUpdate from './Update';
 
-export { validateUpdateProfile };
+export { schemaUpdate };

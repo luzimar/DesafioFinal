@@ -1,4 +1,4 @@
-import validateSignIn from './SignIn';
-import validateSignUp from './SignUp';
+import schemaSignIn from './SignIn';
+import schemaSignUp from './SignUp';
 
-export { validateSignIn, validateSignUp };
+export { schemaSignIn, schemaSignUp };
