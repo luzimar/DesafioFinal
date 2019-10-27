@@ -36,26 +36,27 @@ class UserController {
   }
 
   async update(req, res) {
-    const { email, oldPassword } = req.body;
-    const user = await User.findByPk(req.userId);
-
-    if (email !== user.email) {
-      const userExists = await User.findOne({ where: { email } });
-
-      if (userExists) {
-        return res.json({
-          success: false,
-          message: 'E-mail já utilizado',
-        });
-      }
-    }
-
-    if (oldPassword && !(await user.checkPassword(oldPassword))) {
-      return res.json({ success: false, message: 'Senha atual inválida' });
-    }
-
     try {
+      const { email, oldPassword } = req.body;
+      const user = await User.findByPk(req.userId);
+
+      if (email !== user.email) {
+        const userExists = await User.findOne({ where: { email } });
+
+        if (userExists) {
+          return res.json({
+            success: false,
+            message: 'E-mail já utilizado',
+          });
+        }
+      }
+
+      if (oldPassword && !(await user.checkPassword(oldPassword))) {
+        return res.json({ success: false, message: 'Senha atual inválida' });
+      }
       const { id, name } = await user.update(req.body);
+
+      console.log(`NOME: ${name}`);
 
       return res.json({
         success: true,
