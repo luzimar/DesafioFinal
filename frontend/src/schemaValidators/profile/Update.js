@@ -7,12 +7,12 @@ const obj = Yup.object().shape(
       .email('Informe um e-mail válido')
       .required('O e-mail é obrigatório'),
     oldPassword: Yup.string().when('password', {
-      is: val => val != '',
+      is: val => val,
       then: Yup.string().required('Senha antiga é obrigatória'),
       otherwise: Yup.string(),
     }),
     password: Yup.string().when('oldPassword', {
-      is: val => val != '',
+      is: val => val,
       then: Yup.string()
         .required('Senha é obrigatória')
         .min(6, 'Senha deve ter no míninmo 6 caracteres'),
