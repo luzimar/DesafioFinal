@@ -1,6 +1,6 @@
 # Meetapp Mobile
 
-# OBS: Disponível somente para android
+### OBS: Disponível somente para android
 
 ### Install dependencies
 
