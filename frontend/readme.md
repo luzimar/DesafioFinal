@@ -48,13 +48,13 @@ Esse projeto foi desenvolvido com as seguintes tecnologias:
 
 O Meetapp Web é uma aplicação para criação de Meetups.
 
-### :fire: Dependências
+## :fire: Dependências
 
 Para instalar as dependências de pacotes basta:
 
 - npm install ou yarn
 
-### :key: Como inicializar?
+## :key: Como inicializar?
 
 Para inicilizar em ambiente local deve-se seguir os passos abaixo:
 
