@@ -1,5 +1,5 @@
 <h1 align="center">
-    <img alt="logo" title="logo" src=".readme/logo.svg" width="250px" />
+    <img alt="logo" title="logo" src=".readme/logo.svg" width="150px" />
 </h1>
 
 <h4 align="center">
