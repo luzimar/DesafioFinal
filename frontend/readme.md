@@ -8,6 +8,8 @@
 <p align="center">
   <a href="#metro-tecnologias">Tecnologias</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
   <a href="#-projeto">Projeto</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+  <a href="#-dependências">Dependências</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+  <a href="#-como-inicializar?">Como inicializar?</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
 </p>
 
 <br>
@@ -46,13 +48,13 @@ Esse projeto foi desenvolvido com as seguintes tecnologias:
 
 O Meetapp Web é uma aplicação para criação de Meetups.
 
-### Install dependencies
+### :fire: Dependências
 
 Para instalar as dependências de pacotes basta:
 
 - npm install ou yarn
 
-### Startup
+### :key: Como inicializar?
 
 Para inicilizar em ambiente local deve-se seguir os passos abaixo:
 
