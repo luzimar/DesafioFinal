@@ -3,11 +3,10 @@ import { darken } from 'polished';
 
 export const Container = styled.div`
   background: rgba(0, 0, 0, 0.4);
-  padding: 0 30px;
 `;
 
 export const Content = styled.div`
-  height: 64px;
+  padding: 10px;
   max-width: 900px;
   margin: 0 auto;
   display: flex;
